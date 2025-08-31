@@ -1,10 +1,10 @@
 ﻿using ChatService.Application.Cqrs.Chats.Commands;
+using ChatService.Application.Cqrs.Chats.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatService.API.Controllers
 {
-
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -27,9 +27,10 @@ namespace ChatService.API.Controllers
 
 
         [HttpGet("status/{chatId}")]
-        public IActionResult GetChatStatus(Guid chatId)
+        public async Task<IActionResult> GetChatStatus(Guid chatId)
         {
-            return Ok();
+            var result = await _mediator.Send(new GetChatStatusQuery(chatId));
+            return Ok(result);
         }
     }
 }

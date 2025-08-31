@@ -21,5 +21,9 @@ namespace ChatService.Infrastructure.Repositories
         {
            await _context.ChatSessions.AddAsync(chat);
         }
+        public async Task<ChatSession?> GetByIdAsync(Guid chatId)
+        {
+           return await _context.ChatSessions.FindAsync(chatId);
+        }
     }
 }

@@ -26,6 +26,7 @@ namespace ChatService.Infrastructure
 
             #region Redis Services
             services.AddScoped<IChatSessionQueueService, ChatSessionQueueService>();
+            services.AddScoped<IChatSessionPolllingService, ChatSessionPolllingService>();
             #endregion
 
             #region Repository

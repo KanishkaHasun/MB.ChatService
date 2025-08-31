@@ -4,7 +4,7 @@ using StackExchange.Redis;
 
 namespace ChatService.Infrastructure.Services
 {
-    public class ChatSessionQueueService: IChatSessionQueueService
+    internal class ChatSessionQueueService: IChatSessionQueueService
     {
         private readonly IDatabase _database;
 

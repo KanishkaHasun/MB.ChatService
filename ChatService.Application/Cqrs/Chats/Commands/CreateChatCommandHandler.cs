@@ -14,16 +14,19 @@ namespace ChatService.Application.Handlers
         private readonly IChatRepository _chatRepo;
         private readonly IRepositoryManager _repositoryManager;
         private readonly IChatSessionQueueService _chatSessionQueueService;
+        private readonly IChatSessionPolllingService _chatSessionPolllingService;
 
         public CreateChatCommandHandler(IUserRepository userRepo,
             IChatRepository chatRepo,
             IRepositoryManager repositoryManager,
-            IChatSessionQueueService chatSessionQueueService)
+            IChatSessionQueueService chatSessionQueueService,
+            IChatSessionPolllingService chatSessionPolllingService)
         {
             _userRepo = userRepo;
             _chatRepo = chatRepo;
             _repositoryManager = repositoryManager;
             _chatSessionQueueService = chatSessionQueueService;
+            _chatSessionPolllingService = chatSessionPolllingService;
         }
 
         public async Task<CreateChatResponseDto> Handle(CreateChatCommand request, CancellationToken cancellationToken)
@@ -44,11 +47,14 @@ namespace ChatService.Application.Handlers
             await _repositoryManager.SaveChangesAsync(cancellationToken);
 
             await _chatSessionQueueService.EnqueueAsync(chatSession.Id.ToString());
-
+           
             chatSession.SetState(ChatStatus.QUEUED);
             await _repositoryManager.SaveChangesAsync(cancellationToken);
 
-            return MapToCreateChatResponseDto(user.Id, chatSession.Id, chatSession.Status);
+            CreateChatResponseDto chatResponseDto = MapToCreateChatResponseDto(user.Id, chatSession.Id, chatSession.Status);
+            await _chatSessionPolllingService.AddAsync(chatResponseDto);
+
+            return chatResponseDto;
         }
 
         private CreateChatResponseDto MapToCreateChatResponseDto(Guid userId, Guid chatId, ChatStatus chatStatus) {

@@ -5,5 +5,6 @@ namespace ChatService.Application.Interfaces
     public interface IChatRepository
     {
         Task AddAsync(ChatSession chat);
+        Task<ChatSession?> GetByIdAsync(Guid chatId);
     }
 }
