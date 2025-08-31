@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ChatService.Domain.Entities;
 
 namespace ChatService.Application.Interfaces
 {
-    internal interface IChatRepository
+    public interface IChatRepository
     {
+        Task AddAsync(ChatSession chat);
     }
 }

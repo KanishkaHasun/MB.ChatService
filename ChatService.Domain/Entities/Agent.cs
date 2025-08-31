@@ -1,10 +1,10 @@
-﻿using ChatService.Domain.Enums;
+﻿using ChatService.Domain.Entities.Common;
+using ChatService.Domain.Enums;
 
 namespace ChatService.Domain.Entities
 {
-    public class Agent
+    public class Agent: BaseUser
     {
-        public Guid Id { get;private set; }
         public string Name { get; private set; } = string.Empty;
         public SeniorityLevel SeniorityLevel { get; private set; }
     }
