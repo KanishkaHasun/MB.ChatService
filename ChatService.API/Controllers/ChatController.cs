@@ -1,7 +1,6 @@
 ﻿using ChatService.Application.Cqrs.Chats.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using StackExchange.Redis;
 
 namespace ChatService.API.Controllers
 {
@@ -13,7 +12,7 @@ namespace ChatService.API.Controllers
     public class ChatController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public ChatController(IConnectionMultiplexer redis, IMediator mediator)
+        public ChatController(IMediator mediator)
         {
             _mediator = mediator;
         }
