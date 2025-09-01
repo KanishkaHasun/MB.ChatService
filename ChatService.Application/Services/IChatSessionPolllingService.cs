@@ -11,6 +11,7 @@ namespace ChatService.Application.Services
         Task UpdateStatusAsync(Guid chatId, string newStatus);
         Task UpdateHeartbeatAsync(Guid chatId);
         Task DeleteSessionAsync(Guid chatId, ChatStatus chatStatus);
+        Task<IList<Guid>> ExpireInactiveChatsAsync(IEnumerable<Guid> chatIds, TimeSpan pollThreshold);
 
     }
 }

@@ -36,6 +36,7 @@ namespace ChatService.Background.Services
 
                 var agentService = scope.ServiceProvider.GetRequiredService<IAgentService>();
                 var chatService = scope.ServiceProvider.GetRequiredService<IChatSessionQueueService>();
+                var pollingService = scope.ServiceProvider.GetRequiredService<IChatSessionPolllingService>();
 
                 DateTime utcNow = DateTime.UtcNow;
                 string? chatSessionId = await SelectOldestWaitingChat(chatService);
@@ -64,6 +65,7 @@ namespace ChatService.Background.Services
 
                 await RemoveChatSessionFromQueue(chatService);
                 await UpdateAgentCapacity(agentService, agent);
+                await UpdatePollingStatus(pollingService, agent.AgentId, chatSessionId);
 
             }
         }
@@ -99,6 +101,18 @@ namespace ChatService.Background.Services
         private static async Task RemoveAgentFromQueue(IAgentService agentService, AgentDto agent)
         {
             await agentService.RemoveAgentAsync(agent);
+        }
+
+        private static async Task UpdatePollingStatus(IChatSessionPolllingService pollingService, Guid agentId, string chatId) 
+        {
+            CreateChatResponseDto chatResponse = new CreateChatResponseDto
+            {
+                ChatId = Guid.Parse(chatId),
+                AgentId = agentId,
+                ChatStatus = ChatStatus.ASSIGNED.ToString()
+            };
+
+            await pollingService.UpdateAsync(chatResponse);
         }
     }
 }

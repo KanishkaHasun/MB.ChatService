@@ -5,6 +5,7 @@
         INITIALIZED = 1,
         QUEUED = 2,
         ASSIGNED = 3,
-        COMPLETED = 4
+        COMPLETED = 4,
+        ABANDONED = 5
     }
 }

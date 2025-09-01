@@ -14,12 +14,22 @@ namespace ChatService.Infrastructure.Helpers
         {
             return new HashEntry[]
             {
-            new HashEntry("userId", dto.UserId.ToString()),
-            new HashEntry("agentId", dto.AgentId.ToString()),
-            new HashEntry("status", dto.ChatStatus),
-            new HashEntry("lastHeartbeat", DateTime.UtcNow.ToString())
+                new HashEntry("userId", dto.UserId.ToString()),
+                new HashEntry("agentId", dto.AgentId.ToString()),
+                new HashEntry("status", dto.ChatStatus),
+                new HashEntry("lastHeartbeat", DateTime.UtcNow.ToString())
             };
         }
+
+        public static HashEntry[] MapToUpdateHashEntries(CreateChatResponseDto dto)
+        {
+            return new HashEntry[]
+            {
+                new HashEntry("agentId", dto.AgentId.ToString()),
+                new HashEntry("status", dto.ChatStatus)
+            };
+        }
+
         public static ChatStatusDto MapToChatStatusDto(HashEntry[] entry)
         {
             var map = entry.ToDictionary(

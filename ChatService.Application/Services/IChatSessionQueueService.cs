@@ -6,6 +6,7 @@
         Task<string?> DequeueAsync();
         Task<int> GetQueueLengthAsync();
         Task<string?> PeekAsync();
+        Task RemoveAsync(Guid chatId);
 
     }
 }

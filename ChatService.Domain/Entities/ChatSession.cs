@@ -41,6 +41,10 @@ namespace ChatService.Domain.Entities
 
         private bool IsValidTransition(ChatStatus current, ChatStatus next)
         {
+            if (next== ChatStatus.ABANDONED)
+            {
+                return true;
+            }
             return current switch
             {
                 ChatStatus.INITIALIZED => next == ChatStatus.QUEUED,
