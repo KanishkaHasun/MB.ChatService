@@ -1,12 +1,6 @@
 ﻿using ChatService.Application.Interfaces;
 using ChatService.Domain.Entities;
 using ChatService.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChatService.Infrastructure.Repositories
 {

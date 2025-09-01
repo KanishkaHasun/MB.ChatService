@@ -27,12 +27,14 @@ namespace ChatService.Infrastructure
             #region Redis Services
             services.AddScoped<IChatSessionQueueService, ChatSessionQueueService>();
             services.AddScoped<IChatSessionPolllingService, ChatSessionPolllingService>();
+            services.AddScoped<IAgentService, AgentService>();
             #endregion
 
             #region Repository
             services.AddScoped<IRepositoryManager, RepositoryManager>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddScoped<ITeamRepository, TeamRepository>();
             #endregion
 
             return services;

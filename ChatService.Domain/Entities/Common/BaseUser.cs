@@ -6,11 +6,15 @@
         public string Username { get; private set; }
         public DateTimeOffset DatetimeCreated { get; private set; }
 
-        public BaseUser(string? username = null)
+        public BaseUser(string? username = null) : this(Guid.NewGuid(), username ?? Guid.NewGuid().ToString(), DateTimeOffset.UtcNow)
         {
-            Id = Guid.NewGuid();
-            Username = username ?? string.Empty;
-            DatetimeCreated = DateTime.UtcNow;
+        }
+
+        public BaseUser(Guid id, string username , DateTimeOffset datetimeCreated)
+        {
+            Id = id;
+            Username = username;
+            DatetimeCreated = datetimeCreated;
         }
     }
 }

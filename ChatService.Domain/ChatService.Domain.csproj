@@ -10,8 +10,4 @@
     <Folder Include="Events\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ChatService.Background\ChatService.Background.csproj" />
-  </ItemGroup>
-
 </Project>
