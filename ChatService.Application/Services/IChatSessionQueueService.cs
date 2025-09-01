@@ -5,6 +5,7 @@
         Task EnqueueAsync(string chatId);
         Task<string?> DequeueAsync();
         Task<int> GetQueueLengthAsync();
+        Task<string?> PeekAsync();
 
     }
 }

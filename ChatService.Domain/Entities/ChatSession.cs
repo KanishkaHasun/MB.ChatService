@@ -34,13 +34,18 @@ namespace ChatService.Domain.Entities
             Status = newState;
         }
 
+        public void SetAgent(Guid assignedAgentId)
+        {
+            AssignedAgentId = assignedAgentId;
+        }
+
         private bool IsValidTransition(ChatStatus current, ChatStatus next)
         {
             return current switch
             {
                 ChatStatus.INITIALIZED => next == ChatStatus.QUEUED,
-                ChatStatus.QUEUED => next == ChatStatus.IN_PROGRESS,
-                ChatStatus.IN_PROGRESS => next == ChatStatus.COMPLETED,
+                ChatStatus.QUEUED => next == ChatStatus.ASSIGNED,
+                ChatStatus.ASSIGNED => next == ChatStatus.COMPLETED,
                 _ => false
             };
         }

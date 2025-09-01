@@ -30,6 +30,11 @@ namespace ChatService.Infrastructure.Services
             var queueKey = RedisKeyManagement.ChatQueueMain;
             return (int)await _database.ListLengthAsync(queueKey);
         }
+        public async Task<string?> PeekAsync()
+        {
+            var queueKey = RedisKeyManagement.ChatQueueMain;
+            return await _database.ListGetByIndexAsync(queueKey, 0);
+        }
 
     }
 }

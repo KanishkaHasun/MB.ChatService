@@ -4,7 +4,7 @@
     {
         INITIALIZED = 1,
         QUEUED = 2,
-        IN_PROGRESS = 3,
+        ASSIGNED = 3,
         COMPLETED = 4
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ChatService.Application.Interfaces;
 using ChatService.Domain.Entities;
+using ChatService.Domain.Enums;
 using ChatService.Infrastructure.Data;
 
 namespace ChatService.Infrastructure.Repositories
@@ -18,6 +19,19 @@ namespace ChatService.Infrastructure.Repositories
         public async Task<ChatSession?> GetByIdAsync(Guid chatId)
         {
            return await _context.ChatSessions.FindAsync(chatId);
+        }
+        public async Task<bool> AssignAgentAsync(Guid chatId, Guid agentId)
+        {
+            ChatSession? chatSession = await _context.ChatSessions.FindAsync(chatId);
+            if (chatSession == null)
+            {
+                return false;
+            }
+            chatSession.SetAgent(agentId);
+            chatSession.SetState(ChatStatus.ASSIGNED);
+
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
