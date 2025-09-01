@@ -20,7 +20,7 @@ namespace ChatService.Domain.Entities
 
         public double TotalCapacity => Agents.Sum(a => a.Capacity);
 
-        public double MaxQueueSize => Math.Floor(TotalCapacity * 1.5);
+        public int MaxQueueSize => (int) Math.Round(TotalCapacity * 1.5);
 
 
     }

@@ -1,6 +1,8 @@
 ﻿using ChatService.Application.Interfaces;
 using ChatService.Application.Models.Dtos;
 using ChatService.Application.Services;
+using ChatService.BackgroundWorker.Helpers;
+using ChatService.Domain.Enums;
 
 namespace ChatService.BackgroundWorker.Services
 {
@@ -23,8 +25,8 @@ namespace ChatService.BackgroundWorker.Services
 
             while (!stoppingToken.IsCancellationRequested)
             {
+                await UpdateTeamCapacity();
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
-                //future work: i need to do a health check here
             }
         }
 
@@ -51,6 +53,31 @@ namespace ChatService.BackgroundWorker.Services
                 {
                     await agentService.AddAgentAsync(agentDto);
                 }
+            }
+        }
+
+        private async Task UpdateTeamCapacity() 
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var teamRepo = scope.ServiceProvider.GetRequiredService<ITeamRepository>();
+                var teamManageService = scope.ServiceProvider.GetRequiredService<ITeamManagementService>();
+
+                DateTime utcNow = DateTime.UtcNow;
+                Shift shift = ShiftHelper.GetMainShift(utcNow);
+                List<Shift> shiftsToUpdate = new List<Shift> { shift };
+
+                if (ShiftHelper.IsOverflowTeamActive(utcNow)) 
+                {
+                    shiftsToUpdate.Add(Shift.OfficeHours);
+                }
+
+                var teams = await teamRepo.GetActiveTeamMembersByShiftAsync(shiftsToUpdate);
+
+                int totalTeamCapacity = teams.Sum(t => t.MaxQueueSize);
+
+                await teamManageService.AddTeamCapacity(totalTeamCapacity);
+
             }
         }
     }

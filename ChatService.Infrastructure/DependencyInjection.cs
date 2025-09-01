@@ -28,6 +28,7 @@ namespace ChatService.Infrastructure
             services.AddScoped<IChatSessionQueueService, ChatSessionQueueService>();
             services.AddScoped<IChatSessionPolllingService, ChatSessionPolllingService>();
             services.AddScoped<IAgentService, AgentService>();
+            services.AddScoped<ITeamManagementService, TeamManagementService>();
             #endregion
 
             #region Repository

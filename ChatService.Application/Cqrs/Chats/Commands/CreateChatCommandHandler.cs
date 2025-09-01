@@ -15,18 +15,21 @@ namespace ChatService.Application.Handlers
         private readonly IRepositoryManager _repositoryManager;
         private readonly IChatSessionQueueService _chatSessionQueueService;
         private readonly IChatSessionPolllingService _chatSessionPolllingService;
+        private readonly ITeamManagementService _teamManagementService;
 
         public CreateChatCommandHandler(IUserRepository userRepo,
             IChatRepository chatRepo,
             IRepositoryManager repositoryManager,
             IChatSessionQueueService chatSessionQueueService,
-            IChatSessionPolllingService chatSessionPolllingService)
+            IChatSessionPolllingService chatSessionPolllingService,
+            ITeamManagementService teamManagementService)
         {
             _userRepo = userRepo;
             _chatRepo = chatRepo;
             _repositoryManager = repositoryManager;
             _chatSessionQueueService = chatSessionQueueService;
             _chatSessionPolllingService = chatSessionPolllingService;
+            _teamManagementService = teamManagementService;
         }
 
         public async Task<CreateChatResponseDto> Handle(CreateChatCommand request, CancellationToken cancellationToken)
@@ -40,9 +43,12 @@ namespace ChatService.Application.Handlers
                 user = new User(request.Username);
                 await _userRepo.AddAsync(user);
             }
-           
-            // need to validte conditon before creating the chat
-            ChatSession chatSession= user.CreateChat();
+
+            if (!await IsQueueUnderMaxCapacity()) 
+            {
+                throw new InvalidOperationException("The chat queue is at maximum capacity. Please try again later.");
+            }
+                ChatSession chatSession= user.CreateChat();
             await _chatRepo.AddAsync(chatSession);
             await _repositoryManager.SaveChangesAsync(cancellationToken);
 
@@ -57,14 +63,22 @@ namespace ChatService.Application.Handlers
             return chatResponseDto;
         }
 
-        private CreateChatResponseDto MapToCreateChatResponseDto(Guid userId, Guid chatId, ChatStatus chatStatus) {
-
+        private static CreateChatResponseDto MapToCreateChatResponseDto(Guid userId, Guid chatId, ChatStatus chatStatus) 
+        {
             return new CreateChatResponseDto
             {
                 UserId = userId,
                 ChatId = chatId,
                 ChatStatus = chatStatus.ToString()
             };
+        }
+
+        private async Task<bool> IsQueueUnderMaxCapacity() 
+        {
+            int queueSize = await _chatSessionQueueService.GetQueueLengthAsync();
+            int maxCapacity = await _teamManagementService.GetMaxTeamCapacity();
+
+            return (queueSize < maxCapacity);
         }
     }
 }

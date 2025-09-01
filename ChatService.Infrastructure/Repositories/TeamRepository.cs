@@ -15,11 +15,11 @@ namespace ChatService.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Team>> GetTeamByShiftAsync(IList<Shift> shifts)
+        public async Task<IEnumerable<Team>> GetActiveTeamMembersByShiftAsync(IList<Shift> shifts)
         {
             return await _context.Teams
                 .AsNoTracking()
-                .Include(a => a.Agents)
+                .Include(t => t.Agents.Where(a=> a.IsActive))
                 .Where(t => shifts.Contains(t.Shift))
                 .ToListAsync();
         }
